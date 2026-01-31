@@ -560,11 +560,15 @@ func (s *Service) createProvider() (providers.StreamingProvider, error) {
 		}
 		return providers.NewAnthropicClient(s.cfg.AnthropicAPIKey, modelName, timeout), nil
 
-	case "openai":
-		if s.cfg.OpenAIAPIKey == "" {
-			return nil, fmt.Errorf("OpenAI API key not configured")
-		}
-		return providers.NewOpenAIClient(s.cfg.OpenAIAPIKey, modelName, "", timeout), nil
+case "openai":
+	if s.cfg.OpenAIAPIKey == "" {
+		return nil, fmt.Errorf("OpenAI API key not configured")
+	}
+	baseURL := s.cfg.OpenAIBaseURL
+	if baseURL == "" {
+		baseURL = "https://api.openai.com"
+	}
+	return providers.NewOpenAIClient(s.cfg.OpenAIAPIKey,modelName,baseURL,timeout,), nil
 
 	case "deepseek":
 		if s.cfg.DeepSeekAPIKey == "" {
