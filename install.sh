@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 INSTALL_DIR="/opt/pulse"
 CONFIG_DIR="/etc/pulse"  # All config and data goes here for manual installs
 SERVICE_NAME="pulse"
-GITHUB_REPO="rcourtman/Pulse"
+GITHUB_REPO="jimmy062006/Pulse"
 BUILD_FROM_SOURCE=false
 SKIP_DOWNLOAD=false
 IN_CONTAINER=false
@@ -571,7 +571,7 @@ prompt_proxy_installation() {
         echo ""
         print_info "Skipping proxy installation"
         print_info "Temperature monitoring from container will be unavailable"
-        print_info "To enable later, run: curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid <CTID>"
+        print_info "To enable later, run: curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid <CTID>"
         return 1
     fi
 }
@@ -668,8 +668,8 @@ check_docker_environment() {
        [[ -f /run/.containerenv ]] || \
        [[ "${container:-}" == "docker" ]]; then
         print_error "Docker environment detected"
-        echo "Please use the Docker image directly: docker run -d -p 7655:7655 rcourtman/pulse:latest"
-        echo "See: https://github.com/rcourtman/Pulse/blob/main/docs/DOCKER.md"
+        echo "Please use the Docker image directly: docker run -d -p 7655:7655 jimmy062006/Pulse:latest"
+        echo "See: https://github.com/jimmy062006/Pulse/blob/main/docs/DOCKER.md"
         exit 1
     fi
 }
@@ -1542,7 +1542,7 @@ create_lxc_container() {
     local script_source="/tmp/pulse_install_$$.sh"
     if [[ "$0" == "bash" ]] || [[ ! -f "$0" ]]; then
         # We're being piped, download the script with retry logic
-        local download_url="https://github.com/rcourtman/Pulse/releases/latest/download/install.sh"
+        local download_url="https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh"
         local download_success=false
         local download_error=""
         local max_retries=3
@@ -1753,21 +1753,21 @@ fi'; then
         if [[ "$installer_ready" != true ]]; then
             if command -v timeout >/dev/null 2>&1; then
                 if timeout 15 curl -fsSL --connect-timeout 5 --max-time 15 \
-                    "https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh" \
+                    "https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh" \
                     > "$proxy_script" 2>/dev/null; then
                     installer_ready=true
                 else
                     print_warn "Failed to download proxy installer - temperature monitoring unavailable"
-                    print_info "Run manually later: curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
+                    print_info "Run manually later: curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
                 fi
             else
                 if curl -fsSL --connect-timeout 5 --max-time 15 \
-                    "https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh" \
+                    "https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh" \
                     > "$proxy_script" 2>/dev/null; then
                     installer_ready=true
                 else
                     print_warn "Failed to download proxy installer - temperature monitoring unavailable"
-                    print_info "Run manually later: curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
+                    print_info "Run manually later: curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
                 fi
             fi
         fi
@@ -1906,7 +1906,7 @@ fi'; then
                 echo
                 echo "To fix, you can either:"
                 echo "  1. Fix the issue and run the proxy installer manually:"
-                echo "     curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
+                echo "     curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh | bash -s -- --ctid $CTID"
                 echo
                 echo "  2. Re-run the Pulse installer and skip temperature monitoring when prompted"
                 echo
@@ -2938,7 +2938,7 @@ build_agent_binaries_from_source() {
             env_cmd+=(GOARM="$goarm")
         fi
 
-        if ! "${env_cmd[@]}" go build -ldflags="-X github.com/rcourtman/pulse-go-rewrite/internal/dockeragent.Version=${agent_version}" -o "$output" ./cmd/pulse-docker-agent >/dev/null 2>&1; then
+        if ! "${env_cmd[@]}" go build -ldflags="-X github.com/jimmy062006/Pulse-go-rewrite/internal/dockeragent.Version=${agent_version}" -o "$output" ./cmd/pulse-docker-agent >/dev/null 2>&1; then
             print_warn "Failed to build Docker agent for $suffix"
             rm -f "$output"
             continue
@@ -3102,7 +3102,7 @@ build_from_source() {
     chmod +x "$INSTALL_DIR/bin/pulse"
 
     agent_version=$(git describe --tags --always --dirty 2>/dev/null || echo "dev")
-    if ! go build -ldflags="-X github.com/rcourtman/pulse-go-rewrite/internal/dockeragent.Version=${agent_version}" -o pulse-docker-agent ./cmd/pulse-docker-agent >/dev/null 2>&1; then
+    if ! go build -ldflags="-X github.com/jimmy062006/Pulse-go-rewrite/internal/dockeragent.Version=${agent_version}" -o pulse-docker-agent ./cmd/pulse-docker-agent >/dev/null 2>&1; then
         print_error "Failed to build Docker agent binary"
         cd "$original_dir" >/dev/null 2>&1 || true
         rm -rf "$temp_build"
@@ -3229,9 +3229,9 @@ fi
 
 echo "Updating Pulse..."
 if [[ ${#extra_args[@]} -gt 0 ]]; then
-    curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install.sh | bash -s -- "${extra_args[@]}"
+    curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh | bash -s -- "${extra_args[@]}"
 else
-    curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install.sh | bash
+    curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh | bash
 fi
 
 echo ""
@@ -3311,7 +3311,7 @@ setup_auto_updates() {
     cat > /etc/systemd/system/pulse-update.service << 'EOF'
 [Unit]
 Description=Automatic Pulse update check and install
-Documentation=https://github.com/rcourtman/Pulse
+Documentation=https://github.com/jimmy062006/Pulse
 After=network-online.target
 Wants=network-online.target
 
@@ -3339,7 +3339,7 @@ EOF
     cat > /etc/systemd/system/pulse-update.timer << 'EOF'
 [Unit]
 Description=Daily check for Pulse updates
-Documentation=https://github.com/rcourtman/Pulse
+Documentation=https://github.com/jimmy062006/Pulse
 After=network-online.target
 Wants=network-online.target
 
@@ -3538,9 +3538,9 @@ print_completion() {
     echo "  journalctl -u $SERVICE_NAME -f    - View logs"
     echo
     echo -e "${YELLOW}Management:${NC}"
-    echo "  Update:     curl -sSL https://github.com/rcourtman/Pulse/releases/latest/download/install.sh | bash"
-    echo "  Reset:      curl -sSL https://github.com/rcourtman/Pulse/releases/latest/download/install.sh | bash -s -- --reset"
-    echo "  Uninstall:  curl -sSL https://github.com/rcourtman/Pulse/releases/latest/download/install.sh | bash -s -- --uninstall"
+    echo "  Update:     curl -sSL https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh | bash"
+    echo "  Reset:      curl -sSL https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh | bash -s -- --reset"
+    echo "  Uninstall:  curl -sSL https://github.com/jimmy062006/Pulse/releases/latest/download/install.sh | bash -s -- --uninstall"
 
     # Skip temperature proxy status display for v5+ (unified agent handles it)
     if [[ "${INSTALLER_MAJOR_VERSION:-0}" -lt 5 ]]; then
@@ -3571,7 +3571,7 @@ print_completion() {
             echo
             echo -e "${YELLOW}Temperature monitoring:${NC}"
             echo "  Run on the Proxmox host to enable secure temperature collection:"
-            echo "    curl -fsSL https://github.com/rcourtman/Pulse/releases/latest/download/install-sensor-proxy.sh | \\"
+            echo "    curl -fsSL https://github.com/jimmy062006/Pulse/releases/latest/download/install-sensor-proxy.sh | \\"
             echo "      bash -s -- --ctid ${proxy_ctid} --pulse-server ${PULSE_URL}"
             echo "  See docs/TEMPERATURE_MONITORING.md for details."
         fi
